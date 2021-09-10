@@ -30,7 +30,8 @@ def grandeurExtraite(params,N):
     ##################
     ## !!!!!! CHANGER LA FONCTION POUR L'ADAPTER AU CAS ETUDIÉ !!!!!!!!
     ##################
-    return (valeurs('Cb',params,value)*valeurs('Vb',params,value)/valeurs('Va',params,value),value)
+    OutputValue = valeurs('Cb',params,value)*valeurs('Vb',params,value)/valeurs('Va',params,value)
+    return (OutputValue,value)
 
 def tirage(param,N):
     """
