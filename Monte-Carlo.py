@@ -95,7 +95,7 @@ widths = np.ones(SquareGridSize+1)
 widths[-1]=SquareGridSize
 
 fig = plt.figure(figsize=(10,6))
-gs = fig.add_gridspec(SquareGridSize,SquareGridSize+1,  width_ratios=tuple(widths), height_ratios=tuple(np.ones(SquareGridSize,dtype='uint')), left=0.08, right=0.95, bottom=0.05, top=0.95, wspace=0.18, hspace=0.3)
+gs = fig.add_gridspec(SquareGridSize,SquareGridSize+1,  width_ratios=tuple(widths), height_ratios=tuple(np.ones(SquareGridSize,dtype='uint')), left=0.08, right=0.95, bottom=0.05, top=0.95, wspace=0.18, hspace=0.2)
 
 #Plot final avec histogramme de la valeur en sortie
 ax1 = fig.add_subplot(gs[:int(np.ceil(SquareGridSize/2)),SquareGridSize])
