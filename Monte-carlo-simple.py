@@ -25,7 +25,7 @@ CaMoy= np.average(Ca)
 
 
 Ccla=10
-uCla=np.sqrt((0.1/(10*np.sqrt(3)))**2+(0.001/(np.sqrt(3)*0.1))+(0.001/(np.sqrt(6)*0.1)))
+uCla=np.sqrt((0.1/(10*np.sqrt(3)))**2+(0.001/(np.sqrt(3)*0.1))**2+(0.001/(np.sqrt(6)*0.1))**2)
 
 #abscisse
 x = np.linspace(np.min(Ca),np.max(Ca),100)
