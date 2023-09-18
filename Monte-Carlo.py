@@ -10,6 +10,8 @@ import scipy.stats as stats
 """
 Script écrit par Martin Vérot, PRAG en chimie à l'ENS de Lyon, grâce à un script original de Jean Lamerenx
 https://jlamerenx.fr/python/
+Un cours plus complete est disponible ici : http://agregationchimie.free.fr/cours.php#incertitudes 
+
 
 Il est possible de changer le nombre de tirages simulés, les paramètres d'entrée et la fonction.
 
@@ -22,29 +24,37 @@ Pour définir un paramètre d'entrée, il faut lui donner un nom, une forme de d
 Ensuite, il faut définir la fonction qui calcule la variable de sortie en fonction de l'ensemble des variables d'entrée : z=f(x_1,...x_n)
 La fonction est définie à l'avant dernière ligne de la fonction "grandeurExtraite" où il faut remplacer chaque variable x_i par valeurs('x_i',params,value)
 
+
 Par exemple, pour calculer z=B*exp(-k*E) avec B, k, et E les paramètres d'entrée, il faudrait changer pour avoir quelque chose similaire à ;
 Adaptation de la définition des paramètres d'entrée à notre cas :
 ####################### 
 params = [
-    {'name':'B','distribution':'triangulaire','valeur':0.1,'etendue':0.01},
+    {'name':'B','distribution':'rectangulaire','valeur':0.1,'etendue':0.01},
     {'name':'k','distribution':'rectangulaire','valeur':10.0,'etendue':1.0},
-    {'name':'E','distribution':'gaussienne','valeur':10.0,'etendue':0.1}
+    {'name':'E','distribution':'rectangulaire','valeur':10.0,'etendue':0.1}
 ]
 #######################
 Changement de la fonction à calculer pour le paramètre de sortie :
 #######################
-    OutputValue = valeurs('B',params,value)*np.exp(valeurs('k',params,value)*valeurs('E',params,value))
+    OutputValue = valeurs('B',params,value)*np.exp(-valeurs('k',params,value)*valeurs('E',params,value))
 #######################
 """
 
 #Nombre de tirages simulés
 N=100000                                                                         
+
+
 #paramètres utilisés et leur distribution
 params = [
-        {'name':'Cb','distribution':'triangulaire','valeur':0.1,'etendue':0.01},
+        {'name':'Cb','distribution':'rectangulaire','valeur':0.1,'etendue':0.01},
         {'name':'Vb','distribution':'rectangulaire','valeur':10.0,'etendue':1.0},
-        {'name':'Va','distribution':'gaussienne','valeur':10.0,'etendue':0.1}
+        {'name':'Va','distribution':'rectangulaire','valeur':10.0,'etendue':0.1}
         ]
+#Titre du graphique :
+bigtitle =  'Simulation de {} tirages'.format(N)
+abscisse = 'Ca en mol/L'
+
+
 ####
 #Fonction à changer en fonction du cas étudié !!!! 
 ####
@@ -133,9 +143,11 @@ gs = fig.add_gridspec(SquareGridSize,SquareGridSize+1,  width_ratios=tuple(width
 ax1 = fig.add_subplot(gs[:int(np.ceil(SquareGridSize/2)),SquareGridSize])
 ax1.hist(Output, bins='auto',density = True, label = "Monte-Carlo")
 ax1.plot(x, Gauss, 'k-', label = "Gaussienne associée")
-fig.suptitle('Simulation de {} titrages Ca = {:.3e} mol/L u(Ca) = {:3e}'.format(N,moy,u))
-ax1.set_xlabel('Ca en mol/L')
-ax1.legend()
+fig.suptitle(bigtitle)
+ax1.set_xlabel(abscisse)
+ax1.text(0.95, 0.95, 'z_0 = {:2.4e} u_z = {:.3f}'.format(moy,u), horizontalalignment='right',
+     verticalalignment='bottom', transform=ax1.transAxes)
+ax1.legend(loc='upper left')
 
 #Tracé de l'intervalle de confiance lié à la largeur de l'intervalle
 ax2 = fig.add_subplot(gs[int(np.ceil(SquareGridSize/2)):,SquareGridSize])
@@ -143,8 +155,8 @@ Intervalles = []
 x2 = np.linspace(0,5*u,100)
 for value in x2.tolist():
     Intervalles.append(IntervalleConfiance(value, Output,moy))
-ax2.plot(x2, Intervalles, 'k-', label = "")
-ax2.set_xlabel('largeur de l\'intervalle $U$ ($z=z_0\pm U$)')
+ax2.plot(x2/u, Intervalles, 'k-', label = "")
+ax2.set_xlabel('facteur multiplicatif $k$ ($z=z_0\pm k \\times u $)')
 ax2.set_ylabel('Intervalle de confiance')
 
 
@@ -158,6 +170,8 @@ for i in range(nbParams):
     ax.hist(values[i],bins='auto',density = True, label = params[i]['name'])
     ax.legend(loc='upper right')
 
+plt.savefig("MC.svg")
 plt.show()
+
 
 
